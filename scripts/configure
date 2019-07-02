@@ -1,0 +1,26 @@
+#!/bin/bash
+# Update the CI pipeline on Concourse. assumes you already have
+# your fly client logged in. Updates from the current branch of
+# this repo, with each branch as its own pipeline so that we can
+# test new pipeline configurations without breaking master.
+set -eu
+
+# TODO: this is currently left out of source control via
+# .gitignore, but that's crappy. we should stand up Vault
+# or some other secrets store for this on the CI server
+. .env
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+pipeline="plan"
+
+if [[ "${branch}" != "master" ]]; then
+    pipeline="plan:${branch}"
+fi
+
+fly -t ci \
+    set-pipeline -p "${pipeline}" \
+    -c ../pipeline.yml \
+    --var=branch_name="${branch}" \
+    --var=docker-hub-email="${DOCKER_HUB_EMAIL}" \
+    --var=docker-hub-username="${DOCKER_HUB_USERNAME}" \
+    --var=docker-hub-password="${DOCKER_HUB_PASSWORD}"

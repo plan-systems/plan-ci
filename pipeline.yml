@@ -1,0 +1,101 @@
+---
+
+jobs:
+
+  # builds the golang toolchain Docker image that will be
+  # used by all our other jobs
+  - name: golang-toolchain
+    public: true
+    plan:
+      - get: plan-ci-src
+        trigger: true
+      - get: base-toolchain-go
+        trigger: true
+      - put: plan-toolchain-go
+        params:
+          build: plan-ci-src/images/plan-toolchain-go
+
+resources:
+
+  # --------------------------------------
+  # resources internal to CI
+
+  # defines the base Docker image we'll use for the golang toolchain.
+  # bump this whenever we switch to a new version of golang across the
+  # project. we check this once a week for updates.
+  - name: base-toolchain-go
+    type: docker-image
+    icon: docker
+    check_every: 168h
+    public: true
+    source:
+      email: ((docker-hub-email))
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      repository: golang
+      tag: 1.12-stretch
+
+  # defines the completed golang toolchain, including protobufs tooling
+  # and anything else we need to build the applications. we'll push this
+  # container image to the Docker Hub as part of our build process.
+  - name: plan-toolchain-go
+    type: docker-image
+    icon: docker
+    source:
+      email: ((docker-hub-email))
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      repository: machinistlabs/plan-toolchain-go
+
+  # this repo!
+  - name: plan-ci-src
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/plan-systems/plan-ci
+      branch: master
+
+  # --------------------------------------
+  # our project repos
+
+  # - name: plan-client-phost-src
+  #   type: git
+  #   icon: github-circle
+  #   source:
+  #     uri: https://github.com/plan-systems/plan-client-phost
+  #     branch: master
+
+  # - name: plan-client-unity-src
+  #   type: git
+  #   icon: github-circle
+  #   source:
+  #     uri: https://github.com/plan-systems/plan-client-unity
+  #     branch: master
+
+  # - name: plan-core-src
+  #   type: git
+  #   icon: github-circle
+  #   source:
+  #     uri: https://github.com/plan-systems/plan-core
+  #     branch: master
+
+  # - name: plan-pdi-local-src
+  #   type: git
+  #   icon: github-circle
+  #   source:
+  #     uri: https://github.com/plan-systems/plan-pdi-local
+  #     branch: master
+
+  # - name: plan-pnode-src
+  #   type: git
+  #   icon: github-circle
+  #   source:
+  #     uri: https://github.com/plan-systems/plan-pnode
+  #     branch: master
+
+  # - name: plan-protobufs-src
+  #   type: git
+  #   icon: github-circle
+  #   source:
+  #     uri: https://github.com/plan-systems/plan-protobufs
+  #     branch: master
