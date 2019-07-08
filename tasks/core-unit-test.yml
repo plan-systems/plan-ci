@@ -1,0 +1,20 @@
+---
+# plan-core unit test runner
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: machinistlabs/plan-toolchain-go
+    tag: latest
+
+inputs:
+  - name: plan-ci-src
+  - name: plan-core-src
+    path: plan-core
+  - name: protobufs
+
+run:
+  path: ../plan-ci-src/tasks/core-unit-test
+  dir: plan-core

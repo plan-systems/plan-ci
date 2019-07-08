@@ -7,13 +7,69 @@ jobs:
   - name: golang-toolchain
     public: true
     plan:
-      - get: plan-ci-src
-        trigger: true
-      - get: base-toolchain-go
-        trigger: true
+      # TODO: this is pulling the base image twice and we
+      #       should fix that for sake of efficiency
+      - in_parallel:
+        - get: plan-ci-src
+        - get: base-toolchain-go
+          trigger: true
       - put: plan-toolchain-go
         params:
           build: plan-ci-src/images/plan-toolchain-go
+
+  # runs tests on the core PLAN golang library
+  - name: plan-core
+    public: true
+    plan:
+      - in_parallel:
+        - get: plan-toolchain-go
+          trigger: true
+        - get: plan-ci-src
+          trigger: true
+        - get: plan-core-src
+          trigger: true
+        - get: plan-protobufs-src
+          trigger: true
+      - task: build-protobufs
+        file: plan-ci-src/tasks/build-protobufs.yml
+      - task: test
+        file: plan-ci-src/tasks/core-unit-test.yml
+      # TODO: we don't have a well-defined lint task yet
+      # - task: lint
+      #   file: plan-ci-src/tasks/core-lint.yml
+
+  # - name: plan-pdi-local
+  #   public: true
+  #   plan:
+  #     - in_parallel:
+  #       - get: plan-toolchain-go
+  #       - get: plan-ci-src
+  #         trigger: true
+  #       - get: plan-pdi-local-src
+  #         trigger: true
+  #         # required to build protobufs
+  #       - get: plan-core-src
+  #         trigger: true
+  #       - get: plan-protobufs-src
+  #         trigger: true
+  #     - task: build-protobufs
+  #       file: plan-ci-src/tasks/build-protobufs.yml
+  #     - in_parallel:
+  #       - task: lint
+  #         file: plan-ci-src/tasks/golang-lint.yml
+  #         vars:
+  #           repo: plan-pdi-local
+  #         timeout: 2m
+  #       - task: unit-test
+  #         file: plan-ci-src/tasks/golang-unit-test.yml
+  #         vars:
+  #           repo: plan-pdi-local
+  #         timeout: 2m
+  #     - task: build
+  #       file: plan-ci-src/tasks/golang-build.yml
+  #       vars:
+  #         repo: plan-pdi-local
+  #       timeout: 2m
 
 resources:
 
@@ -53,7 +109,7 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-ci
-      branch: master
+      branch: testing
 
   # --------------------------------------
   # our project repos
@@ -72,12 +128,12 @@ resources:
   #     uri: https://github.com/plan-systems/plan-client-unity
   #     branch: master
 
-  # - name: plan-core-src
-  #   type: git
-  #   icon: github-circle
-  #   source:
-  #     uri: https://github.com/plan-systems/plan-core
-  #     branch: master
+  - name: plan-core-src
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/plan-systems/plan-core
+      branch: master
 
   # - name: plan-pdi-local-src
   #   type: git
@@ -93,9 +149,9 @@ resources:
   #     uri: https://github.com/plan-systems/plan-pnode
   #     branch: master
 
-  # - name: plan-protobufs-src
-  #   type: git
-  #   icon: github-circle
-  #   source:
-  #     uri: https://github.com/plan-systems/plan-protobufs
-  #     branch: master
+  - name: plan-protobufs-src
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/plan-systems/plan-protobufs
+      branch: master

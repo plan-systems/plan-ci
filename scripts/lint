@@ -1,0 +1,9 @@
+#!/bin/bash
+# quick smoke test for verifying all our pipeline and task files
+# are at least valid YAML
+set -e
+
+pushd .. > /dev/null
+yaml2json < pipeline.yml  > /dev/null || exit 1
+find ./tasks -type f -name '*.yml' | xargs cat | yaml2json > /dev/null || exit 1
+popd > /dev/null
