@@ -1,0 +1,7 @@
+#!/bin/bash
+set -ex
+
+export GOPATH="$(pwd)/go"
+export PATH="${PATH}:${GOPATH}/bin"
+cd "${WORKDIR}"
+exec "$@"

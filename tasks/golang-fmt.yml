@@ -1,5 +1,5 @@
 ---
-# generic unit test runner for a PLAN golang project
+# generic linter for a PLAN golang project
 
 platform: linux
 
@@ -24,6 +24,5 @@ run:
   path: go/bin/gopath
   args:
     - "go"
-    - "test"
-    - "-v"
+    - "fmt"
     - "./..."

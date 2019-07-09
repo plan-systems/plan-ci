@@ -29,26 +29,21 @@ includes:
     file: plan-ci-src/tasks/golang-lint.yml
     timeout: 2m
 
+  go-fmt: &go-fmt
+    file: plan-ci-src/tasks/golang-fmt.yml
+    timeout: 2m
+
   go-build-windows: &go-build-windows
     file: plan-ci-src/tasks/golang-build.yml
     timeout: 2m
-    vars:
-      goos: windows
-      goarch: amd64
 
   go-build-macos: &go-build-macos
     file: plan-ci-src/tasks/golang-build.yml
     timeout: 2m
-    vars:
-      goos: darwin
-      goarch: amd64
 
   go-build-linux: &go-build-linux
     file: plan-ci-src/tasks/golang-build.yml
     timeout: 2m
-    vars:
-      goos: linux
-      goarch: amd64
 
 # ----------------------------------------
 
@@ -82,13 +77,26 @@ jobs:
           trigger: true
         - get: plan-protobufs-src
           trigger: true
-      - task: build-protobufs
-        file: plan-ci-src/tasks/build-protobufs.yml
-      - task: test
-        file: plan-ci-src/tasks/core-unit-test.yml
-      # TODO: we don't have a well-defined lint task yet
-      # - task: lint
-      #   file: plan-ci-src/tasks/core-lint.yml
+      - task: go-get
+        <<: *go-get
+        vars: { repo: plan-core }
+      # - task: go-get
+      #   file: plan-ci-src/tasks/core-go-get.yml
+      - in_parallel:
+        - task: build-protobufs
+          file: plan-ci-src/tasks/build-protobufs.yml
+        - task: test
+          <<: *go-test
+          vars: { repo: plan-core }
+        - try:
+            # TODO: we should fail on linting
+            task: lint
+            <<: *go-lint
+            vars: { repo: plan-core }
+        - try:
+            task: fmt
+            <<: *go-fmt
+            vars: { repo: plan-core }
 
 
   # TODO: add badges for Github
@@ -102,15 +110,11 @@ jobs:
           trigger: true
         - get: plan-ci-src
           trigger: true
-        - get: plan-pdi-local-src
-          trigger: true
-          # required to build protobufs
+        # TODO: we can get rid of this once ci-testing is merged
         - get: plan-core-src
           trigger: true
-        - get: plan-protobufs-src
+        - get: plan-pdi-local-src
           trigger: true
-      - task: build-protobufs
-        file: plan-ci-src/tasks/build-protobufs.yml
       - task: go-get
         <<: *go-get
         vars: { repo: plan-pdi-local }
@@ -118,19 +122,26 @@ jobs:
         - task: test
           <<: *go-test
           vars: { repo: plan-pdi-local }
-        - task: lint
-          <<: *go-lint
-          vars: { repo: plan-pdi-local }
+        - try:
+            # TODO: we should fail on linting
+            task: lint
+            <<: *go-lint
+            vars: { repo: plan-pdi-local }
+        - try:
+            # TODO: we should fail on linting
+            task: fmt
+            <<: *go-fmt
+            vars: { repo: plan-pdi-local }
       - in_parallel:
         - task: build-linux
           "<<": *go-build-linux
-          vars: { repo: plan-pdi-local }
+          vars: { repo: plan-pdi-local, goos: linux, goarch: amd64 }
         - task: build-windows
           "<<": *go-build-windows
-          vars: { repo: plan-pdi-local }
+          vars: { repo: plan-pdi-local, goos: windows, goarch: amd64 }
         - task: build-macos
           "<<": *go-build-macos
-          vars: { repo: plan-pdi-local }
+          vars: { repo: plan-pdi-local, goos: darwin, goarch: amd64 }
 
 
 resources:
@@ -181,7 +192,7 @@ resources:
   #   icon: github-circle
   #   source:
   #     uri: https://github.com/plan-systems/plan-client-phost
-  #     branch: master
+  #     branch: ci-testing
 
   # - name: plan-client-unity-src
   #   type: git
@@ -195,14 +206,14 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-core
-      branch: master
+      branch: ci-testing
 
   - name: plan-pdi-local-src
     type: git
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-pdi-local
-      branch: master
+      branch: ci-testing
 
   # - name: plan-pnode-src
   #   type: git

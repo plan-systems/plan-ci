@@ -1,4 +1,5 @@
 ---
+# a task to verify we can build protobufs for the plan-core library
 
 platform: linux
 
@@ -9,20 +10,19 @@ image_resource:
     tag: latest
 
 inputs:
-  - name: plan-ci-src
-    path: plan-ci
   - name: plan-core-src
     path: plan-core
   - name: plan-protobufs-src
     path: plan-protobufs
 
+# TODO: I don't think we have any consumers of this anymore?
 outputs:
   - name: protobufs
 
 params:
-  DEST_DIR: "../../protobufs"
-  PROTO_INCLUDE: "../../plan-protobufs/pkg"
+  DEST_DIR: "../protobufs"
+  PROTO_INCLUDE: "../plan-protobufs/pkg"
 
 run:
   path: ./build-protobufs
-  dir: plan-ci/tasks
+  dir: plan-core

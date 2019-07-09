@@ -1,0 +1,16 @@
+#!/bin/bash
+set -ex
+
+export GOPATH="$(pwd)/go"
+export PATH="${PATH}:${GOPATH}/bin"
+
+# install 'gopath' into $PATH so that downstream
+# consumers don't need to include the plan-ci-src
+# input
+SELF_DIR=$(dirname "${BASH_SOURCE[0]}")
+mkdir -p "${GOPATH}/bin"
+cp "${SELF_DIR}/gopath" "${GOPATH}/bin/gopath"
+
+# fetch dependencies with the updated GOPATH
+cd "${WORKDIR}"
+go get -v ./...

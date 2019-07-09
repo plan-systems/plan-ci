@@ -10,24 +10,19 @@ image_resource:
     tag: latest
 
 inputs:
-  - name: ((repo))-src
-    path: ((repo))
-
-    # TODO: should the protobufs just be committed in the plan-core
-    # repo after all?
   - name: plan-ci-src
+    path: plan-ci
+  - name: ((repo))-src
+    path: go/src/github.com/plan-systems/((repo))
+  # TODO: this can be removed once plan-core is "go gettable"
   - name: plan-core-src
-    path: plan-core
-  - name: protobufs
+    path: go/src/github.com/plan-systems/plan-core
 
 outputs:
   - name: go
-    path: /go
+
+params:
+  WORKDIR: go/src/github.com/plan-systems/((repo))
 
 run:
-  # TODO: if we can get rid of the protobufs build we just end
-  #       up with this, which is much nicer!
-  # path: go
-  # args: ["get"]
-  path: ../plan-ci-src/tasks/golang-get
-  dir: ((repo))
+  path: plan-ci/tasks/gosetup

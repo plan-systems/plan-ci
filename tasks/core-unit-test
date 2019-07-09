@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# copies in the protobufs from the previous task
-cp -r ../protobufs/* .
-
-exec make test
