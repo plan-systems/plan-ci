@@ -12,6 +12,46 @@ groups:
       # - plan-client-unity
       # - plan-pnode
 
+
+# ----------------------------------------
+# includes for tasks
+
+includes:
+
+  go-get: &go-get
+    file: plan-ci-src/tasks/golang-get.yml
+
+  go-test: &go-test
+    file: plan-ci-src/tasks/golang-unit-test.yml
+    timeout: 2m
+
+  go-lint: &go-lint
+    file: plan-ci-src/tasks/golang-lint.yml
+    timeout: 2m
+
+  go-build-windows: &go-build-windows
+    file: plan-ci-src/tasks/golang-build.yml
+    timeout: 2m
+    vars:
+      goos: windows
+      goarch: amd64
+
+  go-build-macos: &go-build-macos
+    file: plan-ci-src/tasks/golang-build.yml
+    timeout: 2m
+    vars:
+      goos: darwin
+      goarch: amd64
+
+  go-build-linux: &go-build-linux
+    file: plan-ci-src/tasks/golang-build.yml
+    timeout: 2m
+    vars:
+      goos: linux
+      goarch: amd64
+
+# ----------------------------------------
+
 jobs:
 
   # builds the golang toolchain Docker image that will be
@@ -72,42 +112,26 @@ jobs:
       - task: build-protobufs
         file: plan-ci-src/tasks/build-protobufs.yml
       - task: go-get
-        file: plan-ci-src/tasks/golang-get.yml
-        vars:
-          repo: plan-pdi-local
+        <<: *go-get
+        vars: { repo: plan-pdi-local }
       - in_parallel:
         - task: test
-          file: plan-ci-src/tasks/golang-unit-test.yml
-          vars:
-            repo: plan-pdi-local
-          timeout: 2m
+          <<: *go-test
+          vars: { repo: plan-pdi-local }
         - task: lint
-          file: plan-ci-src/tasks/golang-lint.yml
-          vars:
-            repo: plan-pdi-local
-          timeout: 2m
+          <<: *go-lint
+          vars: { repo: plan-pdi-local }
       - in_parallel:
         - task: build-linux
-          file: plan-ci-src/tasks/golang-build.yml
-          vars:
-            repo: plan-pdi-local
-            goos: linux
-            goarch: amd64
-          timeout: 2m
+          "<<": *go-build-linux
+          vars: { repo: plan-pdi-local }
         - task: build-windows
-          file: plan-ci-src/tasks/golang-build.yml
-          vars:
-            repo: plan-pdi-local
-            goos: windows
-            goarch: amd64
-          timeout: 2m
+          "<<": *go-build-windows
+          vars: { repo: plan-pdi-local }
         - task: build-macos
-          file: plan-ci-src/tasks/golang-build.yml
-          vars:
-            repo: plan-pdi-local
-            goos: darwin
-            goarch: amd64
-          timeout: 2m
+          "<<": *go-build-macos
+          vars: { repo: plan-pdi-local }
+
 
 resources:
 
