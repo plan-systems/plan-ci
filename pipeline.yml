@@ -1,5 +1,17 @@
 ---
 
+groups:
+  - name: dependencies
+    jobs:
+      - golang-toolchain
+      - plan-core
+  - name: applications
+    jobs:
+      - plan-pdi-local
+      # - plan-client-phost
+      # - plan-client-unity
+      # - plan-pnode
+
 jobs:
 
   # builds the golang toolchain Docker image that will be
@@ -37,6 +49,10 @@ jobs:
       # TODO: we don't have a well-defined lint task yet
       # - task: lint
       #   file: plan-ci-src/tasks/core-lint.yml
+
+
+  # TODO: add badges for Github
+  #       ref http://engineering.pivotal.io/post/concourse-badges/
 
   - name: plan-pdi-local
     public: true
