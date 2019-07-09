@@ -1,5 +1,5 @@
 ---
-# generic `go vet` runner for a PLAN golang project
+# generic linter for a PLAN golang project
 
 platform: linux
 
@@ -10,29 +10,12 @@ image_resource:
     tag: latest
 
 inputs:
-  - name: ((resource))
-    path: ((repo-name))
-
-    # we include the plan-core input here rather than using the
-    # automatic 'go get' invocation so that our protobufs have
-    # somewhere to land.
-    # TODO: should the protobufs just be committed in the plan-core
-    # repo after all?
-  - name: plan-core-src
-    path: /go/src/github.com/plan-systems/plan-core
-
-    # protobufs built in a previous task
-  - name: client.pb.go
-    path: /go/src/github.com/plan-systems/plan-core/client/client.pb.go
-  - name: pdi.pb.go
-    path: /go/src/github.com/plan-systems/plan-core/pdi/pdi.pb.go
-  - name: plan.pb.go
-    path: /go/src/github.com/plan-systems/plan-core/plan/plan.pb.go
-  - name: repo.pb.go
-    path: /go/src/github.com/plan-systems/plan-core/repo/repo.pb.go
-  - name: ski.pb.go
-    path: /go/src/github.com/plan-systems/plan-core/ski/ski.pb.go
+  - name: ((repo))-src
+    path: ((repo))
+  - name: go
+    path: /go
 
 run:
-  path: /usr/local/go/bin/go vet .
-  dir: ((repo-name))
+  path: go
+  args: ["vet", "."]
+  dir: ((repo))

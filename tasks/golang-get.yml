@@ -1,0 +1,33 @@
+---
+# generic dependencies fetching step for a PLAN golang project
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: machinistlabs/plan-toolchain-go
+    tag: latest
+
+inputs:
+  - name: ((repo))-src
+    path: ((repo))
+
+    # TODO: should the protobufs just be committed in the plan-core
+    # repo after all?
+  - name: plan-ci-src
+  - name: plan-core-src
+    path: plan-core
+  - name: protobufs
+
+outputs:
+  - name: go
+    path: /go
+
+run:
+  # TODO: if we can get rid of the protobufs build we just end
+  #       up with this, which is much nicer!
+  # path: go
+  # args: ["get"]
+  path: ../plan-ci-src/tasks/golang-get
+  dir: ((repo))
