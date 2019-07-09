@@ -70,11 +70,28 @@ jobs:
           vars:
             repo: plan-pdi-local
           timeout: 2m
-      - task: build
-        file: plan-ci-src/tasks/golang-build.yml
-        vars:
-          repo: plan-pdi-local
-        timeout: 2m
+      - in_parallel:
+        - task: build-linux
+          file: plan-ci-src/tasks/golang-build.yml
+          vars:
+            repo: plan-pdi-local
+            goos: linux
+            goarch: amd64
+          timeout: 2m
+        - task: build-windows
+          file: plan-ci-src/tasks/golang-build.yml
+          vars:
+            repo: plan-pdi-local
+            goos: windows
+            goarch: amd64
+          timeout: 2m
+        - task: build-macos
+          file: plan-ci-src/tasks/golang-build.yml
+          vars:
+            repo: plan-pdi-local
+            goos: darwin
+            goarch: amd64
+          timeout: 2m
 
 resources:
 

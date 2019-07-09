@@ -18,6 +18,11 @@ inputs:
 outputs:
   - name: ((repo))
 
+# ref https://github.com/golang/go/blob/master/src/go/build/syslist.go
+params:
+  GOOS: ((goos))
+  GOARCH: ((goarch))
+
 run:
   path: go
   args: ["build", "."]
