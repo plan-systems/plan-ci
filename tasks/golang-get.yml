@@ -14,9 +14,6 @@ inputs:
     path: plan-ci
   - name: ((repo))-src
     path: go/src/github.com/plan-systems/((repo))
-  # TODO: this can be removed once plan-core is "go gettable"
-  - name: plan-core-src
-    path: go/src/github.com/plan-systems/plan-core
 
 outputs:
   - name: go

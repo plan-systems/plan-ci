@@ -80,8 +80,6 @@ jobs:
       - task: go-get
         <<: *go-get
         vars: { repo: plan-core }
-      # - task: go-get
-      #   file: plan-ci-src/tasks/core-go-get.yml
       - in_parallel:
         - task: build-protobufs
           file: plan-ci-src/tasks/build-protobufs.yml
@@ -110,7 +108,6 @@ jobs:
           trigger: true
         - get: plan-ci-src
           trigger: true
-        # TODO: we can get rid of this once ci-testing is merged
         - get: plan-core-src
           trigger: true
         - get: plan-pdi-local-src
@@ -192,7 +189,7 @@ resources:
   #   icon: github-circle
   #   source:
   #     uri: https://github.com/plan-systems/plan-client-phost
-  #     branch: ci-testing
+  #     branch: master
 
   # - name: plan-client-unity-src
   #   type: git
@@ -206,14 +203,14 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-core
-      branch: ci-testing
+      branch: master
 
   - name: plan-pdi-local-src
     type: git
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-pdi-local
-      branch: ci-testing
+      branch: master
 
   # - name: plan-pnode-src
   #   type: git

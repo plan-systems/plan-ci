@@ -13,9 +13,6 @@ inputs:
   - name: go
   - name: ((repo))-src
     path: go/src/github.com/plan-systems/((repo))
-  # TODO: need to have this here while this isn't go-gettable
-  - name: plan-core-src
-    path: go/src/github.com/plan-systems/plan-core
 
 params:
   WORKDIR: go/src/github.com/plan-systems/((repo))
