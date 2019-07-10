@@ -28,27 +28,27 @@ includes:
 
   go-test: &go-test
     file: plan-ci-src/tasks/golang-unit-test.yml
-    timeout: 2m
+    timeout: 5m
 
   go-lint: &go-lint
     file: plan-ci-src/tasks/golang-lint.yml
-    timeout: 2m
+    timeout: 5m
 
   go-fmt: &go-fmt
     file: plan-ci-src/tasks/golang-fmt.yml
-    timeout: 2m
+    timeout: 5m
 
   go-build-windows: &go-build-windows
     file: plan-ci-src/tasks/golang-build.yml
-    timeout: 2m
+    timeout: 5m
 
   go-build-macos: &go-build-macos
     file: plan-ci-src/tasks/golang-build.yml
-    timeout: 2m
+    timeout: 5m
 
   go-build-linux: &go-build-linux
     file: plan-ci-src/tasks/golang-build.yml
-    timeout: 2m
+    timeout: 5m
 
 # ----------------------------------------
 
