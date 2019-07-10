@@ -8,9 +8,14 @@ groups:
   - name: applications
     jobs:
       - plan-pdi-local
-      # - plan-client-phost
-      # - plan-client-unity
-      # - plan-pnode
+      - plan-client-phost
+      - plan-pnode
+
+  # TODO: we don't yet have a good workflow for these
+  # - name: unity-applications
+  #   jobs:
+  #     - plan-client-unity
+
 
 
 # ----------------------------------------
@@ -141,6 +146,84 @@ jobs:
           vars: { repo: plan-pdi-local, goos: darwin, goarch: amd64 }
 
 
+  - name: plan-client-phost
+    public: true
+    plan:
+      - in_parallel:
+        - get: plan-toolchain-go
+          trigger: true
+        - get: plan-ci-src
+          trigger: true
+        - get: plan-core-src
+          trigger: true
+        - get: plan-client-phost-src
+          trigger: true
+      - task: go-get
+        <<: *go-get
+        vars: { repo: plan-client-phost }
+      - in_parallel:
+        - task: test
+          <<: *go-test
+          vars: { repo: plan-client-phost }
+        - try:
+            task: lint
+            <<: *go-lint
+            vars: { repo: plan-client-phost }
+        - try:
+            task: fmt
+            <<: *go-fmt
+            vars: { repo: plan-client-phost }
+      - in_parallel:
+        - task: build-linux
+          "<<": *go-build-linux
+          vars: { repo: plan-client-phost, goos: linux, goarch: amd64 }
+        - task: build-windows
+          "<<": *go-build-windows
+          vars: { repo: plan-client-phost, goos: windows, goarch: amd64 }
+        - task: build-macos
+          "<<": *go-build-macos
+          vars: { repo: plan-client-phost, goos: darwin, goarch: amd64 }
+
+
+  - name: plan-pnode
+    public: true
+    plan:
+      - in_parallel:
+        - get: plan-toolchain-go
+          trigger: true
+        - get: plan-ci-src
+          trigger: true
+        - get: plan-core-src
+          trigger: true
+        - get: plan-pnode-src
+          trigger: true
+      - task: go-get
+        <<: *go-get
+        vars: { repo: plan-pnode }
+      - in_parallel:
+        - task: test
+          <<: *go-test
+          vars: { repo: plan-pnode }
+        - try:
+            task: lint
+            <<: *go-lint
+            vars: { repo: plan-pnode }
+        - try:
+            task: fmt
+            <<: *go-fmt
+            vars: { repo: plan-pnode }
+      - in_parallel:
+        - task: build-linux
+          "<<": *go-build-linux
+          vars: { repo: plan-pnode, goos: linux, goarch: amd64 }
+        - task: build-windows
+          "<<": *go-build-windows
+          vars: { repo: plan-pnode, goos: windows, goarch: amd64 }
+        - task: build-macos
+          "<<": *go-build-macos
+          vars: { repo: plan-pnode, goos: darwin, goarch: amd64 }
+
+
 resources:
 
   # --------------------------------------
@@ -184,12 +267,12 @@ resources:
   # --------------------------------------
   # our project repos
 
-  # - name: plan-client-phost-src
-  #   type: git
-  #   icon: github-circle
-  #   source:
-  #     uri: https://github.com/plan-systems/plan-client-phost
-  #     branch: master
+  - name: plan-client-phost-src
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/plan-systems/plan-client-phost
+      branch: master
 
   # - name: plan-client-unity-src
   #   type: git
@@ -212,12 +295,12 @@ resources:
       uri: https://github.com/plan-systems/plan-pdi-local
       branch: master
 
-  # - name: plan-pnode-src
-  #   type: git
-  #   icon: github-circle
-  #   source:
-  #     uri: https://github.com/plan-systems/plan-pnode
-  #     branch: master
+  - name: plan-pnode-src
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/plan-systems/plan-pnode
+      branch: master
 
   - name: plan-protobufs-src
     type: git
