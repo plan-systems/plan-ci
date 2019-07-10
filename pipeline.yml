@@ -28,27 +28,27 @@ includes:
 
   go-test: &go-test
     file: plan-ci-src/tasks/golang-unit-test.yml
-    timeout: 5m
+    timeout: 10m
 
   go-lint: &go-lint
     file: plan-ci-src/tasks/golang-lint.yml
-    timeout: 5m
+    timeout: 10m
 
   go-fmt: &go-fmt
     file: plan-ci-src/tasks/golang-fmt.yml
-    timeout: 5m
+    timeout: 10m
 
   go-build-windows: &go-build-windows
     file: plan-ci-src/tasks/golang-build.yml
-    timeout: 5m
+    timeout: 10m
 
   go-build-macos: &go-build-macos
     file: plan-ci-src/tasks/golang-build.yml
-    timeout: 5m
+    timeout: 10m
 
   go-build-linux: &go-build-linux
     file: plan-ci-src/tasks/golang-build.yml
-    timeout: 5m
+    timeout: 10m
 
 # ----------------------------------------
 
@@ -58,6 +58,10 @@ jobs:
   # used by all our other jobs
   - name: golang-toolchain
     public: true
+    max_in_flight: 2
+    build_log_retention:
+      days: 30
+      builds: 100
     plan:
       # TODO: this is pulling the base image twice and we
       #       should fix that for sake of efficiency
@@ -72,6 +76,10 @@ jobs:
   # runs tests on the core PLAN golang library
   - name: plan-core
     public: true
+    max_in_flight: 2
+    build_log_retention:
+      days: 30
+      builds: 100
     plan:
       - in_parallel:
         - get: plan-toolchain-go
@@ -107,6 +115,10 @@ jobs:
 
   - name: plan-pdi-local
     public: true
+    max_in_flight: 2
+    build_log_retention:
+      days: 30
+      builds: 100
     plan:
       - in_parallel:
         - get: plan-toolchain-go
@@ -148,6 +160,10 @@ jobs:
 
   - name: plan-client-phost
     public: true
+    max_in_flight: 2
+    build_log_retention:
+      days: 30
+      builds: 100
     plan:
       - in_parallel:
         - get: plan-toolchain-go
@@ -187,6 +203,10 @@ jobs:
 
   - name: plan-pnode
     public: true
+    max_in_flight: 2
+    build_log_retention:
+      days: 30
+      builds: 100
     plan:
       - in_parallel:
         - get: plan-toolchain-go
