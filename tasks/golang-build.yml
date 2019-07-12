@@ -15,13 +15,14 @@ inputs:
     path: go/src/github.com/plan-systems/((repo))
 
 outputs:
-  - name: ((repo))-((goos))-((goarch))-build
-    path: go/builds
+  - name: ((repo))-src
+    path: go/src/github.com/plan-systems/((repo))
 
 # ref https://github.com/golang/go/blob/master/src/go/build/syslist.go
 params:
   GOOS: ((goos))
   GOARCH: ((goarch))
+  CGO_ENABLED: 0
   WORKDIR: go/src/github.com/plan-systems/((repo))
 
 run:

@@ -154,8 +154,10 @@ jobs:
           vars: { repo: plan-pdi-local, goos: linux, goarch: amd64 }
           on_success:
             put: artifact-publish
+            inputs:
+              - plan-pdi-local-src
             params:
-              from: /tmp/build/put/go/bin/plan-pdi-local
+              from: /tmp/build/put/plan-pdi-local-src/plan-pdi-local
               to: plan-pdi-local
               os: linux
               arch: amd64
@@ -167,8 +169,10 @@ jobs:
           vars: { repo: plan-pdi-local, goos: windows, goarch: amd64 }
           on_success:
             put: artifact-publish
+            inputs:
+              - plan-pdi-local-src
             params:
-              from: /tmp/build/put/go/bin/plan-pdi-local
+              from: /tmp/build/put/plan-pdi-local-src/plan-pdi-local
               to: plan-pdi-local
               os: windows
               arch: amd64
@@ -180,8 +184,10 @@ jobs:
           vars: { repo: plan-pdi-local, goos: darwin, goarch: amd64 }
           on_success:
             put: artifact-publish
+            inputs:
+              - plan-pdi-local-src
             params:
-              from: /tmp/build/put/go/bin/plan-pdi-local
+              from: /tmp/build/put/plan-pdi-local-src/plan-pdi-local
               to: plan-pdi-local
               os: darwin
               arch: amd64
@@ -225,8 +231,10 @@ jobs:
           vars: { repo: plan-client-phost, goos: linux, goarch: amd64 }
           on_success:
             put: artifact-publish
+            inputs:
+              - plan-pdi-client-phost-src
             params:
-              from: /tmp/build/put/go/bin/plan-client-phost
+              from: /tmp/build/put/plan-pdi-client-phost-src/plan-client-phost
               to: plan-client-phost
               os: linux
               arch: amd64
@@ -238,8 +246,10 @@ jobs:
           vars: { repo: plan-client-phost, goos: windows, goarch: amd64 }
           on_success:
             put: artifact-publish
+            inputs:
+              - plan-pdi-client-phost-src
             params:
-              from: /tmp/build/put/go/bin/plan-client-phost
+              from: /tmp/build/put/plan-client-phost-src/plan-client-phost
               to: plan-client-phost
               os: windows
               arch: amd64
@@ -251,8 +261,10 @@ jobs:
           vars: { repo: plan-client-phost, goos: darwin, goarch: amd64 }
           on_success:
             put: artifact-publish
+            inputs:
+              - plan-pdi-client-phost-src
             params:
-              from: /tmp/build/put/go/bin/plan-client-phost
+              from: /tmp/build/put/plan-client-phost-src/plan-client-phost
               to: plan-client-phost
               os: darwin
               arch: amd64
@@ -299,8 +311,10 @@ jobs:
           vars: { repo: plan-pnode, goos: linux, goarch: amd64 }
           on_success:
             put: artifact-publish
+            inputs:
+              - plan-pnode-src
             params:
-              from: /tmp/build/put/go/bin/plan-pnode
+              from: /tmp/build/put/plan-pnode-src/plan-pnode
               to: plan-pnode
               os: linux
               arch: amd64
@@ -312,8 +326,10 @@ jobs:
           vars: { repo: plan-pnode, goos: windows, goarch: amd64 }
           on_success:
             put: artifact-publish
+            inputs:
+              - plan-pnode-src
             params:
-              from: /tmp/build/put/go/bin/plan-pnode
+              from: /tmp/build/put/plan-pnode-src/plan-pnode
               to: plan-pnode
               os: windows
               arch: amd64
@@ -325,8 +341,10 @@ jobs:
           vars: { repo: plan-pnode, goos: darwin, goarch: amd64 }
           on_success:
             put: artifact-publish
+            inputs:
+              - plan-pnode-src
             params:
-              from: /tmp/build/put/go/bin/plan-pnode
+              from: /tmp/build/put/plan-pnode-src/plan-pnode
               to: plan-pnode
               arch: amd64
               datefmt: "+%Y%m%dT%H%MZ"
