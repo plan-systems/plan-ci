@@ -29,6 +29,4 @@ run:
   args:
     - "go"
     - "build"
-    - "-o"
-    - "$GOPATH/builds/((repo))"
     - "."
