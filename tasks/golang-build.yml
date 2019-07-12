@@ -16,7 +16,7 @@ inputs:
 
 outputs:
   - name: ((repo))-((goos))-((goarch))-build
-    path: go/bin/((repo))
+    path: go/bin
 
 # ref https://github.com/golang/go/blob/master/src/go/build/syslist.go
 params:
