@@ -15,8 +15,8 @@ inputs:
     path: go/src/github.com/plan-systems/((repo))
 
 outputs:
-  - name: ((repo))
-    path: go/bin/github.com/plan-systems/((repo))
+  - name: ((repo))-((goos))-((goarch))-build
+    path: go/bin/((repo))
 
 # ref https://github.com/golang/go/blob/master/src/go/build/syslist.go
 params:
@@ -29,4 +29,6 @@ run:
   args:
     - "go"
     - "build"
+    - "-o"
+    - "$GOPATH/bin/((repo))"
     - "."

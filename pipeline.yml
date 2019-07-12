@@ -50,6 +50,12 @@ includes:
     file: plan-ci-src/tasks/golang-build.yml
     timeout: 10m
 
+  # from, to, os are all defined by callers
+  artifact-publish: &artifact-publish
+    datefmt: '+%Y%m%dT%H%MZ'
+    archive: true
+    arch: amd64
+
 # ----------------------------------------
 
 jobs:
@@ -150,13 +156,27 @@ jobs:
         - task: build-linux
           "<<": *go-build-linux
           vars: { repo: plan-pdi-local, goos: linux, goarch: amd64 }
+          on_success:
+            "<<": *artifact-publish
+            from: go/bin/plan-pdi-local
+            to: plan-pdi-local
+            os: linux
         - task: build-windows
           "<<": *go-build-windows
           vars: { repo: plan-pdi-local, goos: windows, goarch: amd64 }
+          on_success:
+            "<<": *artifact-publish
+            from: go/bin/plan-pdi-local
+            to: plan-pdi-local
+            os: windows
         - task: build-macos
           "<<": *go-build-macos
           vars: { repo: plan-pdi-local, goos: darwin, goarch: amd64 }
-
+          on_success:
+            "<<": *artifact-publish
+            from: go/bin/plan-pdi-local
+            to: plan-pdi-local
+            os: darwin
 
   - name: plan-client-phost
     public: true
@@ -193,12 +213,27 @@ jobs:
         - task: build-linux
           "<<": *go-build-linux
           vars: { repo: plan-client-phost, goos: linux, goarch: amd64 }
+          on_success:
+            "<<": *artifact-publish
+            from: go/bin/plan-client-phost
+            to: plan-client-phost
+            os: linux
         - task: build-windows
           "<<": *go-build-windows
           vars: { repo: plan-client-phost, goos: windows, goarch: amd64 }
+          on_success:
+            "<<": *artifact-publish
+            from: go/bin/plan-client-phost
+            to: plan-client-phost
+            os: windows
         - task: build-macos
           "<<": *go-build-macos
           vars: { repo: plan-client-phost, goos: darwin, goarch: amd64 }
+          on_success:
+            "<<": *artifact-publish
+            from: go/bin/plan-client-phost
+            to: plan-client-phost
+            os: darwin
 
 
   - name: plan-pnode
@@ -236,12 +271,36 @@ jobs:
         - task: build-linux
           "<<": *go-build-linux
           vars: { repo: plan-pnode, goos: linux, goarch: amd64 }
+          on_success:
+            "<<": *artifact-publish
+            from: go/bin/plan-pnode
+            to: plan-pnode
+            os: linux
         - task: build-windows
           "<<": *go-build-windows
           vars: { repo: plan-pnode, goos: windows, goarch: amd64 }
+          on_success:
+            "<<": *artifact-publish
+            from: go/bin/plan-pnode
+            to: plan-pnode
+            os: windows
         - task: build-macos
           "<<": *go-build-macos
           vars: { repo: plan-pnode, goos: darwin, goarch: amd64 }
+          on_success:
+            "<<": *artifact-publish
+            from: go/bin/plan-pnode
+            to: plan-pnode
+            os: darwin
+
+
+resource_types:
+
+  - name: http-publish
+    type: docker-image
+    source:
+      repository: machinistlabs/concourse-http-publish
+      tag: latest
 
 
 resources:
@@ -275,6 +334,15 @@ resources:
       username: ((docker-hub-username))
       password: ((docker-hub-password))
       repository: machinistlabs/plan-toolchain-go
+
+  # uploads our build artifacts to a web server
+  - name: artifact-publish
+    type: http-publish
+    icon: docker
+    source:
+      url: ((http-publish-url))
+      username: ((http-publish-username))
+      password: ((http-publish-password))
 
   # this repo!
   - name: plan-ci-src
