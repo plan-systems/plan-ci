@@ -50,12 +50,6 @@ includes:
     file: plan-ci-src/tasks/golang-build.yml
     timeout: 10m
 
-  # from, to, os are all defined by callers
-  artifact-publish: &artifact-publish
-    datefmt: '+%Y%m%dT%H%MZ'
-    archive: true
-    arch: amd64
-
 # ----------------------------------------
 
 jobs:
@@ -152,31 +146,47 @@ jobs:
             task: fmt
             <<: *go-fmt
             vars: { repo: plan-pdi-local }
+
       - in_parallel:
+
         - task: build-linux
           "<<": *go-build-linux
           vars: { repo: plan-pdi-local, goos: linux, goarch: amd64 }
           on_success:
-            "<<": *artifact-publish
-            from: go/bin/plan-pdi-local
-            to: plan-pdi-local
-            os: linux
+            put: artifact-publish
+            params:
+              from: go/bin/plan-pdi-local
+              to: plan-pdi-local
+              os: linux
+              arch: amd64
+              datefmt: "+%Y%m%dT%H%MZ"
+              archive: true
+
         - task: build-windows
           "<<": *go-build-windows
           vars: { repo: plan-pdi-local, goos: windows, goarch: amd64 }
           on_success:
-            "<<": *artifact-publish
-            from: go/bin/plan-pdi-local
-            to: plan-pdi-local
-            os: windows
+            put: artifact-publish
+            params:
+              from: go/bin/plan-pdi-local
+              to: plan-pdi-local
+              os: windows
+              arch: amd64
+              datefmt: "+%Y%m%dT%H%MZ"
+              archive: true
+
         - task: build-macos
           "<<": *go-build-macos
           vars: { repo: plan-pdi-local, goos: darwin, goarch: amd64 }
           on_success:
-            "<<": *artifact-publish
-            from: go/bin/plan-pdi-local
-            to: plan-pdi-local
-            os: darwin
+            put: artifact-publish
+            params:
+              from: go/bin/plan-pdi-local
+              to: plan-pdi-local
+              os: darwin
+              arch: amd64
+              datefmt: "+%Y%m%dT%H%MZ"
+              archive: true
 
   - name: plan-client-phost
     public: true
@@ -214,26 +224,40 @@ jobs:
           "<<": *go-build-linux
           vars: { repo: plan-client-phost, goos: linux, goarch: amd64 }
           on_success:
-            "<<": *artifact-publish
-            from: go/bin/plan-client-phost
-            to: plan-client-phost
-            os: linux
+            put: artifact-publish
+            params:
+              from: go/bin/plan-client-phost
+              to: plan-client-phost
+              os: linux
+              arch: amd64
+              datefmt: "+%Y%m%dT%H%MZ"
+              archive: true
+
         - task: build-windows
           "<<": *go-build-windows
           vars: { repo: plan-client-phost, goos: windows, goarch: amd64 }
           on_success:
-            "<<": *artifact-publish
-            from: go/bin/plan-client-phost
-            to: plan-client-phost
-            os: windows
+            put: artifact-publish
+            params:
+              from: go/bin/plan-client-phost
+              to: plan-client-phost
+              os: windows
+              arch: amd64
+              datefmt: "+%Y%m%dT%H%MZ"
+              archive: true
+
         - task: build-macos
           "<<": *go-build-macos
           vars: { repo: plan-client-phost, goos: darwin, goarch: amd64 }
           on_success:
-            "<<": *artifact-publish
-            from: go/bin/plan-client-phost
-            to: plan-client-phost
-            os: darwin
+            put: artifact-publish
+            params:
+              from: go/bin/plan-client-phost
+              to: plan-client-phost
+              os: darwin
+              arch: amd64
+              datefmt: "+%Y%m%dT%H%MZ"
+              archive: true
 
 
   - name: plan-pnode
@@ -267,31 +291,47 @@ jobs:
             task: fmt
             <<: *go-fmt
             vars: { repo: plan-pnode }
+
       - in_parallel:
+
         - task: build-linux
           "<<": *go-build-linux
           vars: { repo: plan-pnode, goos: linux, goarch: amd64 }
           on_success:
-            "<<": *artifact-publish
-            from: go/bin/plan-pnode
-            to: plan-pnode
-            os: linux
+            put: artifact-publish
+            params:
+              from: go/bin/plan-pnode
+              to: plan-pnode
+              os: linux
+              arch: amd64
+              datefmt: "+%Y%m%dT%H%MZ"
+              archive: true
+
         - task: build-windows
           "<<": *go-build-windows
           vars: { repo: plan-pnode, goos: windows, goarch: amd64 }
           on_success:
-            "<<": *artifact-publish
-            from: go/bin/plan-pnode
-            to: plan-pnode
-            os: windows
+            put: artifact-publish
+            params:
+              from: go/bin/plan-pnode
+              to: plan-pnode
+              os: windows
+              arch: amd64
+              datefmt: "+%Y%m%dT%H%MZ"
+              archive: true
+
         - task: build-macos
           "<<": *go-build-macos
           vars: { repo: plan-pnode, goos: darwin, goarch: amd64 }
           on_success:
-            "<<": *artifact-publish
-            from: go/bin/plan-pnode
-            to: plan-pnode
-            os: darwin
+            put: artifact-publish
+            params:
+              from: go/bin/plan-pnode
+              to: plan-pnode
+              arch: amd64
+              datefmt: "+%Y%m%dT%H%MZ"
+              archive: true
+              os: darwin
 
 
 resource_types:

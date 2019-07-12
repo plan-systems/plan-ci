@@ -20,9 +20,10 @@ fi
 fly -t ci \
     set-pipeline -p "${pipeline}" \
     -c ../pipeline.yml \
-    --var=branch_name="${branch}" \
-    --var=docker-hub-email="${DOCKER_HUB_EMAIL}" \
-    --var=docker-hub-username="${DOCKER_HUB_USERNAME}" \
-    --var=docker-hub-password="${DOCKER_HUB_PASSWORD}" \
-    --var=uploads-username="${UPLOADS_USER}" \
-    --var=uploads-password="${UPLOADS_PASSWORD}"
+    --var=branch_name="$branch" \
+    --var=docker-hub-email="$DOCKER_HUB_EMAIL" \
+    --var=docker-hub-username="$DOCKER_HUB_USERNAME" \
+    --var=docker-hub-password="$DOCKER_HUB_PASSWORD" \
+    --var=http-publish-url="$HTTP_PUBLISH_URL" \
+    --var=http-publish-username="$HTTP_PUBLISH_USER" \
+    --var=http-publish-password="$HTTP_PUBLISH_PASSWORD"
