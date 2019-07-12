@@ -232,9 +232,9 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-pdi-client-phost-src
+              - plan-client-phost-src
             params:
-              from: /tmp/build/put/plan-pdi-client-phost-src/plan-client-phost
+              from: /tmp/build/put/plan-client-phost-src/plan-client-phost
               to: plan-client-phost
               os: linux
               arch: amd64
@@ -247,7 +247,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-pdi-client-phost-src
+              - plan-client-phost-src
             params:
               from: /tmp/build/put/plan-client-phost-src/plan-client-phost
               to: plan-client-phost
@@ -262,7 +262,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-pdi-client-phost-src
+              - plan-client-phost-src
             params:
               from: /tmp/build/put/plan-client-phost-src/plan-client-phost
               to: plan-client-phost
