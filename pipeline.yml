@@ -232,7 +232,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - build-linux
+              - builds-linux
             params:
               from: /tmp/build/put/builds-linux/plan-client-phost
               to: plan-client-phost
