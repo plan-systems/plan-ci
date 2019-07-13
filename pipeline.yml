@@ -157,7 +157,7 @@ jobs:
             inputs:
               - plan-pdi-local-src
             params:
-              from: /tmp/build/put/plan-pdi-local-src/plan-pdi-local
+              from: /tmp/build/put/builds-linux/plan-pdi-local
               to: plan-pdi-local
               os: linux
               arch: amd64
@@ -172,7 +172,7 @@ jobs:
             inputs:
               - plan-pdi-local-src
             params:
-              from: /tmp/build/put/plan-pdi-local-src/plan-pdi-local
+              from: /tmp/build/put/builds-windows/plan-pdi-local
               to: plan-pdi-local
               os: windows
               arch: amd64
@@ -187,7 +187,7 @@ jobs:
             inputs:
               - plan-pdi-local-src
             params:
-              from: /tmp/build/put/plan-pdi-local-src/plan-pdi-local
+              from: /tmp/build/put/builds-darwin/plan-pdi-local
               to: plan-pdi-local
               os: darwin
               arch: amd64
@@ -234,7 +234,7 @@ jobs:
             inputs:
               - plan-client-phost-src
             params:
-              from: /tmp/build/put/plan-client-phost-src/plan-client-phost
+              from: /tmp/build/put/builds-linux/plan-client-phost
               to: plan-client-phost
               os: linux
               arch: amd64
@@ -249,7 +249,7 @@ jobs:
             inputs:
               - plan-client-phost-src
             params:
-              from: /tmp/build/put/plan-client-phost-src/plan-client-phost
+              from: /tmp/build/put/builds-windows/plan-client-phost
               to: plan-client-phost
               os: windows
               arch: amd64
@@ -264,7 +264,7 @@ jobs:
             inputs:
               - plan-client-phost-src
             params:
-              from: /tmp/build/put/plan-client-phost-src/plan-client-phost
+              from: /tmp/build/put/builds-darwin/plan-client-phost
               to: plan-client-phost
               os: darwin
               arch: amd64
@@ -314,7 +314,7 @@ jobs:
             inputs:
               - plan-pnode-src
             params:
-              from: /tmp/build/put/plan-pnode-src/plan-pnode
+              from: /tmp/build/put/builds-linux/plan-pnode
               to: plan-pnode
               os: linux
               arch: amd64
@@ -329,7 +329,7 @@ jobs:
             inputs:
               - plan-pnode-src
             params:
-              from: /tmp/build/put/plan-pnode-src/plan-pnode
+              from: /tmp/build/put/builds-windows/plan-pnode
               to: plan-pnode
               os: windows
               arch: amd64
@@ -344,7 +344,7 @@ jobs:
             inputs:
               - plan-pnode-src
             params:
-              from: /tmp/build/put/plan-pnode-src/plan-pnode
+              from: /tmp/build/put/builds-darwin/plan-pnode
               to: plan-pnode
               arch: amd64
               datefmt: "+%Y%m%dT%H%MZ"

@@ -6,6 +6,7 @@ export GOARCH="$GOARCH"
 export CGO_ENABLED="$CGO_ENABLED"
 export GOPATH="$(pwd)/go"
 export PATH="${PATH}:${GOPATH}/bin"
+export OLDDIR=$(pwd)
 
 cd "${WORKDIR}"
 $@

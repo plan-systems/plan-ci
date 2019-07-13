@@ -15,8 +15,7 @@ inputs:
     path: go/src/github.com/plan-systems/((repo))
 
 outputs:
-  - name: ((repo))-src
-    path: go/src/github.com/plan-systems/((repo))
+  - name: builds-((goos))
 
 # ref https://github.com/golang/go/blob/master/src/go/build/syslist.go
 params:
@@ -30,4 +29,6 @@ run:
   args:
     - "go"
     - "build"
+    - "-o"
+    - "${OLDDIR}/builds-((goos))/((repo))"
     - "."
