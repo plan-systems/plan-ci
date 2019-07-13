@@ -10,6 +10,7 @@ export PATH="${PATH}:${GOPATH}/bin"
 SELF_DIR=$(dirname "${BASH_SOURCE[0]}")
 mkdir -p "${GOPATH}/bin"
 cp "${SELF_DIR}/gopath" "${GOPATH}/bin/gopath"
+cp "${SELF_DIR}/gobuild" "${GOPATH}/bin/gobuild"
 
 # fetch dependencies with the updated GOPATH
 cd "${WORKDIR}"

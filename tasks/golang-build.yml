@@ -25,10 +25,6 @@ params:
   WORKDIR: go/src/github.com/plan-systems/((repo))
 
 run:
-  path: go/bin/gopath
+  path: go/bin/gobuild
   args:
-    - "go"
-    - "build"
-    - "-o"
-    - "${OLDDIR}/builds-((goos))/((repo))"
-    - "."
+    - ((repo))

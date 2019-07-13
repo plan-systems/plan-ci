@@ -58,7 +58,7 @@ jobs:
   # used by all our other jobs
   - name: golang-toolchain
     public: true
-    max_in_flight: 2
+    max_in_flight: 1
     build_log_retention:
       days: 30
       builds: 100
@@ -76,7 +76,7 @@ jobs:
   # runs tests on the core PLAN golang library
   - name: plan-core
     public: true
-    max_in_flight: 2
+    max_in_flight: 1
     build_log_retention:
       days: 30
       builds: 100
@@ -115,7 +115,7 @@ jobs:
 
   - name: plan-pdi-local
     public: true
-    max_in_flight: 2
+    max_in_flight: 1
     build_log_retention:
       days: 30
       builds: 100
@@ -155,7 +155,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-pdi-local-src
+              - builds-linux
             params:
               from: /tmp/build/put/builds-linux/plan-pdi-local
               to: plan-pdi-local
@@ -170,7 +170,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-pdi-local-src
+              - builds-windows
             params:
               from: /tmp/build/put/builds-windows/plan-pdi-local
               to: plan-pdi-local
@@ -185,7 +185,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-pdi-local-src
+              - builds-darwin
             params:
               from: /tmp/build/put/builds-darwin/plan-pdi-local
               to: plan-pdi-local
@@ -196,7 +196,7 @@ jobs:
 
   - name: plan-client-phost
     public: true
-    max_in_flight: 2
+    max_in_flight: 1
     build_log_retention:
       days: 30
       builds: 100
@@ -232,7 +232,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-client-phost-src
+              - build-linux
             params:
               from: /tmp/build/put/builds-linux/plan-client-phost
               to: plan-client-phost
@@ -247,7 +247,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-client-phost-src
+              - builds-windows
             params:
               from: /tmp/build/put/builds-windows/plan-client-phost
               to: plan-client-phost
@@ -262,7 +262,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-client-phost-src
+              - builds-darwin
             params:
               from: /tmp/build/put/builds-darwin/plan-client-phost
               to: plan-client-phost
@@ -274,7 +274,7 @@ jobs:
 
   - name: plan-pnode
     public: true
-    max_in_flight: 2
+    max_in_flight: 1
     build_log_retention:
       days: 30
       builds: 100
@@ -312,7 +312,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-pnode-src
+              - builds-linux
             params:
               from: /tmp/build/put/builds-linux/plan-pnode
               to: plan-pnode
@@ -327,7 +327,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-pnode-src
+              - builds-windows
             params:
               from: /tmp/build/put/builds-windows/plan-pnode
               to: plan-pnode
@@ -342,7 +342,7 @@ jobs:
           on_success:
             put: artifact-publish
             inputs:
-              - plan-pnode-src
+              - builds-darwin
             params:
               from: /tmp/build/put/builds-darwin/plan-pnode
               to: plan-pnode
@@ -408,7 +408,7 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-ci
-      branch: master
+      branch: testing
 
   # --------------------------------------
   # our project repos
