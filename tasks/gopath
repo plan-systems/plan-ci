@@ -1,0 +1,8 @@
+#!/bin/bash
+# GOPATH must be absolute, but Concourse task paths must
+# all be relative.
+
+export GOPATH=$(pwd)/go
+cd $1
+shift
+$@

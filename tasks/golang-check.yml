@@ -10,10 +10,15 @@ image_resource:
     tag: latest
 
 inputs:
+  - name: plan-ci-src
   - name: ((repo))-src
 
+caches:
+  - path: go/pkg
+
 run:
-  path: make
+  path: plan-ci-src/tasks/gopath
   args:
+    - "((repo))-src"
+    - "make"
     - "check"
-  dir: ((repo))-src
