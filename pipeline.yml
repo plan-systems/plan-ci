@@ -77,6 +77,12 @@ jobs:
         - task: check
           <<: *go-check
           vars: { repo: plan-core }
+          on_failure:
+            put: notify
+            params:
+              text: |
+                Checks for 'plan-core' failed! :crying_cat_face:
+                https://ci.machinistlabs.com/teams/plan/pipelines/plan/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
 
   - name: plan-pdi-local
     public: true
@@ -95,9 +101,21 @@ jobs:
       - task: check
         <<: *go-check
         vars: { repo: plan-pdi-local }
+        on_failure:
+          put: notify
+          params:
+            text: |
+              Checks for 'plan-pdi-local' failed! :crying_cat_face:
+              https://ci.machinistlabs.com/teams/plan/pipelines/plan/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
       - task: release
         <<: *go-release
         vars: { repo: plan-pdi-local }
+        on_failure:
+          put: notify
+          params:
+            text: |
+              Release for 'plan-pdi-local' failed! :crying_cat_face:
+              https://ci.machinistlabs.com/teams/plan/pipelines/plan/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
         on_success:
           in_parallel:
             - put: artifact-publish
@@ -140,9 +158,21 @@ jobs:
       - task: check
         <<: *go-check
         vars: { repo: plan-client-phost }
+        on_failure:
+          put: notify
+          params:
+            text: |
+              Checks for 'plan-client-phost' failed! :crying_cat_face:
+              https://ci.machinistlabs.com/teams/plan/pipelines/plan/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
       - task: release
         <<: *go-release
         vars: { repo: plan-client-phost }
+        on_failure:
+          put: notify
+          params:
+            text: |
+              Release for 'plan-client-phost' failed! :crying_cat_face:
+              https://ci.machinistlabs.com/teams/plan/pipelines/plan/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
         on_success:
           in_parallel:
             - put: artifact-publish
@@ -185,9 +215,21 @@ jobs:
       - task: check
         <<: *go-check
         vars: { repo: plan-pnode }
+        on_failure:
+          put: notify
+          params:
+            text: |
+              Checks for 'plan-pnode' failed! :crying_cat_face:
+              https://ci.machinistlabs.com/teams/plan/pipelines/plan/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
       - task: release
         <<: *go-release
         vars: { repo: plan-pnode }
+        on_failure:
+          put: notify
+          params:
+            text: |
+              Release for 'plan-pnode' failed! :crying_cat_face:
+              https://ci.machinistlabs.com/teams/plan/pipelines/plan/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
         on_success:
           in_parallel:
             - put: artifact-publish
@@ -219,6 +261,12 @@ resource_types:
     type: docker-image
     source:
       repository: machinistlabs/concourse-http-publish
+      tag: latest
+
+  - name: slack-notification
+    type: docker-image
+    source:
+      repository: cfcommunity/slack-notification-resource
       tag: latest
 
 
@@ -315,3 +363,8 @@ resources:
     source:
       uri: https://github.com/plan-systems/plan-protobufs
       branch: master
+
+  - name: notify
+    type: slack-notification
+    source:
+      url: ((slack-webhook))

@@ -26,4 +26,5 @@ fly -t ci \
     --var=docker-hub-password="$DOCKER_HUB_PASSWORD" \
     --var=http-publish-url="$HTTP_PUBLISH_URL" \
     --var=http-publish-username="$HTTP_PUBLISH_USER" \
-    --var=http-publish-password="$HTTP_PUBLISH_PASSWORD"
+    --var=http-publish-password="$HTTP_PUBLISH_PASSWORD" \
+    --var=slack-webhook="$SLACK_WEBHOOK"
