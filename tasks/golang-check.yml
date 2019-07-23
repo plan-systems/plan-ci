@@ -1,0 +1,19 @@
+---
+# generic check runner for a PLAN golang project
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: machinistlabs/plan-toolchain-go
+    tag: latest
+
+inputs:
+  - name: ((repo))-src
+
+run:
+  path: make
+  args:
+    - "check"
+  dir: ((repo))-src

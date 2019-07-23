@@ -1,0 +1,23 @@
+---
+# generic release builder for a PLAN golang project
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: machinistlabs/plan-toolchain-go
+    tag: latest
+
+inputs:
+  - name: ((repo))-src
+
+outputs:
+  - name: ((repo))-dist
+    path: dist
+
+run:
+  path: make
+  args:
+    - "release"
+  dir: ((repo))-src

@@ -23,32 +23,13 @@ groups:
 
 includes:
 
-  go-get: &go-get
-    file: plan-ci-src/tasks/golang-get.yml
-
-  go-test: &go-test
-    file: plan-ci-src/tasks/golang-unit-test.yml
+  go-check: &go-check
+    file: plan-ci-src/tasks/golang-check.yml
     timeout: 10m
 
-  go-lint: &go-lint
-    file: plan-ci-src/tasks/golang-lint.yml
-    timeout: 10m
-
-  go-fmt: &go-fmt
-    file: plan-ci-src/tasks/golang-fmt.yml
-    timeout: 10m
-
-  go-build-windows: &go-build-windows
-    file: plan-ci-src/tasks/golang-build.yml
-    timeout: 10m
-
-  go-build-macos: &go-build-macos
-    file: plan-ci-src/tasks/golang-build.yml
-    timeout: 10m
-
-  go-build-linux: &go-build-linux
-    file: plan-ci-src/tasks/golang-build.yml
-    timeout: 10m
+  go-release: &go-release
+    file: plan-ci-src/tasks/golang-release.yml
+    timeout: 5m
 
 # ----------------------------------------
 
@@ -90,28 +71,12 @@ jobs:
           trigger: true
         - get: plan-protobufs-src
           trigger: true
-      - task: go-get
-        <<: *go-get
-        vars: { repo: plan-core }
       - in_parallel:
         - task: build-protobufs
           file: plan-ci-src/tasks/build-protobufs.yml
-        - task: test
-          <<: *go-test
+        - task: check
+          <<: *go-check
           vars: { repo: plan-core }
-        - try:
-            # TODO: we should fail on linting
-            task: lint
-            <<: *go-lint
-            vars: { repo: plan-core }
-        - try:
-            task: fmt
-            <<: *go-fmt
-            vars: { repo: plan-core }
-
-
-  # TODO: add badges for Github
-  #       ref http://engineering.pivotal.io/post/concourse-badges/
 
   - name: plan-pdi-local
     public: true
@@ -125,74 +90,38 @@ jobs:
           trigger: true
         - get: plan-ci-src
           trigger: true
-        - get: plan-core-src
-          trigger: true
         - get: plan-pdi-local-src
           trigger: true
-      - task: go-get
-        <<: *go-get
+      - task: check
+        <<: *go-check
         vars: { repo: plan-pdi-local }
-      - in_parallel:
-        - task: test
-          <<: *go-test
-          vars: { repo: plan-pdi-local }
-        - try:
-            # TODO: we should fail on linting
-            task: lint
-            <<: *go-lint
-            vars: { repo: plan-pdi-local }
-        - try:
-            # TODO: we should fail on linting
-            task: fmt
-            <<: *go-fmt
-            vars: { repo: plan-pdi-local }
+      - task: release
+        <<: *go-release
+        vars: { repo: plan-pdi-local }
+        on_success:
+          in_parallel:
+            - put: artifact-publish
+              inputs:
+                - plan-pdi-local-dist
+              params:
+                from: "/tmp/build/put/plan-pdi-local-dist/plan-pdi-local_linux_amd64.tar.gz"
+                to: "plan-pdi-local/${BUILD_DATETIME}/plan-pdi-local_linux_amd64.tar.gz"
+                datefmt: "+%Y%m%dT%H%MZ"
+            - put: artifact-publish
+              inputs:
+                - plan-pdi-local-dist
+              params:
+                from: "/tmp/build/put/plan-pdi-local-dist/plan-pdi-local_darwin_amd64.tar.gz"
+                to: "plan-pdi-local/${BUILD_DATETIME}/plan-pdi-local_darwin_amd64.tar.gz"
+                datefmt: "+%Y%m%dT%H%MZ"
+            - put: artifact-publish
+              inputs:
+                - plan-pdi-local-dist
+              params:
+                from: "/tmp/build/put/plan-pdi-local-dist/plan-pdi-local_windows_amd64.tar.gz"
+                to: "plan-pdi-local/${BUILD_DATETIME}/plan-pdi-local_windows_amd64.tar.gz"
+                datefmt: "+%Y%m%dT%H%MZ"
 
-      - in_parallel:
-
-        - task: build-linux
-          "<<": *go-build-linux
-          vars: { repo: plan-pdi-local, goos: linux, goarch: amd64 }
-          on_success:
-            put: artifact-publish
-            inputs:
-              - builds-linux
-            params:
-              from: /tmp/build/put/builds-linux/plan-pdi-local
-              to: plan-pdi-local
-              os: linux
-              arch: amd64
-              datefmt: "+%Y%m%dT%H%MZ"
-              archive: true
-
-        - task: build-windows
-          "<<": *go-build-windows
-          vars: { repo: plan-pdi-local, goos: windows, goarch: amd64 }
-          on_success:
-            put: artifact-publish
-            inputs:
-              - builds-windows
-            params:
-              from: /tmp/build/put/builds-windows/plan-pdi-local
-              to: plan-pdi-local
-              os: windows
-              arch: amd64
-              datefmt: "+%Y%m%dT%H%MZ"
-              archive: true
-
-        - task: build-macos
-          "<<": *go-build-macos
-          vars: { repo: plan-pdi-local, goos: darwin, goarch: amd64 }
-          on_success:
-            put: artifact-publish
-            inputs:
-              - builds-darwin
-            params:
-              from: /tmp/build/put/builds-darwin/plan-pdi-local
-              to: plan-pdi-local
-              os: darwin
-              arch: amd64
-              datefmt: "+%Y%m%dT%H%MZ"
-              archive: true
 
   - name: plan-client-phost
     public: true
@@ -206,70 +135,37 @@ jobs:
           trigger: true
         - get: plan-ci-src
           trigger: true
-        - get: plan-core-src
-          trigger: true
         - get: plan-client-phost-src
           trigger: true
-      - task: go-get
-        <<: *go-get
+      - task: check
+        <<: *go-check
         vars: { repo: plan-client-phost }
-      - in_parallel:
-        - task: test
-          <<: *go-test
-          vars: { repo: plan-client-phost }
-        - try:
-            task: lint
-            <<: *go-lint
-            vars: { repo: plan-client-phost }
-        - try:
-            task: fmt
-            <<: *go-fmt
-            vars: { repo: plan-client-phost }
-      - in_parallel:
-        - task: build-linux
-          "<<": *go-build-linux
-          vars: { repo: plan-client-phost, goos: linux, goarch: amd64 }
-          on_success:
-            put: artifact-publish
-            inputs:
-              - builds-linux
-            params:
-              from: /tmp/build/put/builds-linux/plan-client-phost
-              to: plan-client-phost
-              os: linux
-              arch: amd64
-              datefmt: "+%Y%m%dT%H%MZ"
-              archive: true
-
-        - task: build-windows
-          "<<": *go-build-windows
-          vars: { repo: plan-client-phost, goos: windows, goarch: amd64 }
-          on_success:
-            put: artifact-publish
-            inputs:
-              - builds-windows
-            params:
-              from: /tmp/build/put/builds-windows/plan-client-phost
-              to: plan-client-phost
-              os: windows
-              arch: amd64
-              datefmt: "+%Y%m%dT%H%MZ"
-              archive: true
-
-        - task: build-macos
-          "<<": *go-build-macos
-          vars: { repo: plan-client-phost, goos: darwin, goarch: amd64 }
-          on_success:
-            put: artifact-publish
-            inputs:
-              - builds-darwin
-            params:
-              from: /tmp/build/put/builds-darwin/plan-client-phost
-              to: plan-client-phost
-              os: darwin
-              arch: amd64
-              datefmt: "+%Y%m%dT%H%MZ"
-              archive: true
+      - task: release
+        <<: *go-release
+        vars: { repo: plan-client-phost }
+        on_success:
+          in_parallel:
+            - put: artifact-publish
+              inputs:
+                - plan-client-phost-dist
+              params:
+                from: "/tmp/build/put/plan-client-phost-dist/plan-client-phost_linux_amd64.tar.gz"
+                to: "plan-client-phost/${BUILD_DATETIME}/plan-client-phost_linux_amd64.tar.gz"
+                datefmt: "+%Y%m%dT%H%MZ"
+            - put: artifact-publish
+              inputs:
+                - plan-client-phost-dist
+              params:
+                from: "/tmp/build/put/plan-client-phost-dist/plan-client-phost_darwin_amd64.tar.gz"
+                to: "plan-client-phost/${BUILD_DATETIME}/plan-client-phost_darwin_amd64.tar.gz"
+                datefmt: "+%Y%m%dT%H%MZ"
+            - put: artifact-publish
+              inputs:
+                - plan-client-phost-dist
+              params:
+                from: "/tmp/build/put/plan-client-phost-dist/plan-client-phost_windows_amd64.tar.gz"
+                to: "plan-client-phost/${BUILD_DATETIME}/plan-client-phost_windows_amd64.tar.gz"
+                datefmt: "+%Y%m%dT%H%MZ"
 
 
   - name: plan-pnode
@@ -284,72 +180,37 @@ jobs:
           trigger: true
         - get: plan-ci-src
           trigger: true
-        - get: plan-core-src
-          trigger: true
         - get: plan-pnode-src
           trigger: true
-      - task: go-get
-        <<: *go-get
+      - task: check
+        <<: *go-check
         vars: { repo: plan-pnode }
-      - in_parallel:
-        - task: test
-          <<: *go-test
-          vars: { repo: plan-pnode }
-        - try:
-            task: lint
-            <<: *go-lint
-            vars: { repo: plan-pnode }
-        - try:
-            task: fmt
-            <<: *go-fmt
-            vars: { repo: plan-pnode }
-
-      - in_parallel:
-
-        - task: build-linux
-          "<<": *go-build-linux
-          vars: { repo: plan-pnode, goos: linux, goarch: amd64 }
-          on_success:
-            put: artifact-publish
-            inputs:
-              - builds-linux
-            params:
-              from: /tmp/build/put/builds-linux/plan-pnode
-              to: plan-pnode
-              os: linux
-              arch: amd64
-              datefmt: "+%Y%m%dT%H%MZ"
-              archive: true
-
-        - task: build-windows
-          "<<": *go-build-windows
-          vars: { repo: plan-pnode, goos: windows, goarch: amd64 }
-          on_success:
-            put: artifact-publish
-            inputs:
-              - builds-windows
-            params:
-              from: /tmp/build/put/builds-windows/plan-pnode
-              to: plan-pnode
-              os: windows
-              arch: amd64
-              datefmt: "+%Y%m%dT%H%MZ"
-              archive: true
-
-        - task: build-macos
-          "<<": *go-build-macos
-          vars: { repo: plan-pnode, goos: darwin, goarch: amd64 }
-          on_success:
-            put: artifact-publish
-            inputs:
-              - builds-darwin
-            params:
-              from: /tmp/build/put/builds-darwin/plan-pnode
-              to: plan-pnode
-              arch: amd64
-              datefmt: "+%Y%m%dT%H%MZ"
-              archive: true
-              os: darwin
+      - task: release
+        <<: *go-release
+        vars: { repo: plan-pnode }
+        on_success:
+          in_parallel:
+            - put: artifact-publish
+              inputs:
+                - plan-pnode-dist
+              params:
+                from: "/tmp/build/put/plan-pnode-dist/plan-pnode_linux_amd64.tar.gz"
+                to: "plan-pnode/${BUILD_DATETIME}/plan-pnode_linux_amd64.tar.gz"
+                datefmt: "+%Y%m%dT%H%MZ"
+            - put: artifact-publish
+              inputs:
+                - plan-pnode-dist
+              params:
+                from: "/tmp/build/put/plan-pnode-dist/plan-pnode_darwin_amd64.tar.gz"
+                to: "plan-pnode/${BUILD_DATETIME}/plan-pnode_darwin_amd64.tar.gz"
+                datefmt: "+%Y%m%dT%H%MZ"
+            - put: artifact-publish
+              inputs:
+                - plan-pnode-dist
+              params:
+                from: "/tmp/build/put/plan-pnode-dist/plan-pnode_windows_amd64.tar.gz"
+                to: "plan-pnode/${BUILD_DATETIME}/plan-pnode_windows_amd64.tar.gz"
+                datefmt: "+%Y%m%dT%H%MZ"
 
 
 resource_types:
@@ -408,7 +269,7 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-ci
-      branch: testing
+      branch: master
 
   # --------------------------------------
   # our project repos
@@ -418,7 +279,7 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-client-phost
-      branch: master
+      branch: gomod_experiment
 
   # - name: plan-client-unity-src
   #   type: git
@@ -432,21 +293,21 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-core
-      branch: master
+      branch: gomod_experiment
 
   - name: plan-pdi-local-src
     type: git
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-pdi-local
-      branch: master
+      branch: gomod_experiment
 
   - name: plan-pnode-src
     type: git
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-pnode
-      branch: master
+      branch: gomod_experiment
 
   - name: plan-protobufs-src
     type: git
