@@ -44,8 +44,6 @@ jobs:
       days: 30
       builds: 100
     plan:
-      # TODO: this is pulling the base image twice and we
-      #       should fix that for sake of efficiency
       - in_parallel:
         - get: plan-ci-src
         - get: base-toolchain-go
@@ -53,6 +51,7 @@ jobs:
       - put: plan-toolchain-go
         params:
           build: plan-ci-src/images/plan-toolchain-go
+        get_params: {skip_download: true}
 
   # runs tests on the core PLAN golang library
   - name: plan-core
