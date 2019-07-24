@@ -340,7 +340,7 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-core
-      branch: gomod_experiment
+      branch: master
 
   - name: plan-pdi-local-src
     type: git
