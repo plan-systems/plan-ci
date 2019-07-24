@@ -326,7 +326,7 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-client-phost
-      branch: gomod_experiment
+      branch: master
 
   # - name: plan-client-unity-src
   #   type: git
@@ -347,14 +347,14 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-pdi-local
-      branch: gomod_experiment
+      branch: master
 
   - name: plan-pnode-src
     type: git
     icon: github-circle
     source:
       uri: https://github.com/plan-systems/plan-pnode
-      branch: gomod_experiment
+      branch: master
 
   - name: plan-protobufs-src
     type: git
